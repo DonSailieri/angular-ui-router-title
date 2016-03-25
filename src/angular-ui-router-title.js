@@ -1,14 +1,14 @@
 "use strict";
 angular.module("ui.router.title", ["ui.router"])
-	.run(["$rootScope", "$timeout", "$state", function($rootScope, $timeout, $state) {
+	.run(["$rootScope", "$timeout", "$state", "$stateParams", function($rootScope, $timeout, $state, $stateParams) {
 
 		$rootScope.$on("$stateChangeSuccess", function() {
-			var title = getTitleValue($state.$current.locals.globals.$title);
+			var title = getTitleValue($state.$current.self.$title);
 			$timeout(function() {
 				$rootScope.$title = title;
 			});
 
-			var description = getDescriptionValue($state.$current.locals.globals.$description);
+			var description = getDescriptionValue($state.$current.self.$description);
 			$timeout(function() {
 				$rootScope.$description = description;
 			});
@@ -18,10 +18,10 @@ angular.module("ui.router.title", ["ui.router"])
 			while(state) {
 				if(state.resolve && state.resolve.$title) {
 					$rootScope.$breadcrumbs.unshift({
-						title: getTitleValue(state.locals.globals.$title),
-						description: getDescriptionValue($state.$current.locals.globals.$description),
+						title: getTitleValue(state.self.$title),
+						description: getDescriptionValue($state.$current.self.$description),
 						state: state.self.name,
-						stateParams: state.locals.globals.$stateParams
+						stateParams: $stateParams
 					})
 				}
 				state = state.parent;
